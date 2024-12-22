@@ -47,7 +47,7 @@ Visit my expo account to download and try the app for yourself !!
 
 4. Start the application:
    ```bash
-   npm start
+   npx expo start
    ```
 
 ## Contributing
