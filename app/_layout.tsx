@@ -1,39 +1,70 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+const THEME = {
+  primary: '#4C2882', // Darker purple
+  secondary: '#5B3698', // Deep muted purple
+  background: '#1A1A2E', // Almost black with a purple tint
+  inactive: '#4A4A6A', // Muted dark purple for inactive tabs
+};
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function TabLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: THEME.secondary,
+        tabBarInactiveTintColor: THEME.inactive,
+        headerShown: false,
+        tabBarStyle: {
+          ...Platform.select({
+            ios: {
+              position: 'absolute',
+            },
+            default: {},
+          }),
+          backgroundColor: THEME.background,
+          borderTopWidth: 0,
+          elevation: 0,
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginTop: 2,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="(tabs)/index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => (
+            <Icon name="home" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(location)/index"
+        options={{
+          title: 'Where is ISS?',
+          tabBarIcon: ({ color }) => (
+            <Icon name="location-pin" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(about)/index"
+        options={{
+          title: 'Who is the creator?',
+          tabBarIcon: ({ color }) => (
+            <Icon name="person" size={28} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
